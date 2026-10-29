@@ -1,7 +1,6 @@
 import { readdirSync } from 'node:fs';
 import type { RigConfig } from './config.js';
 import { countNight, type NightCounts } from './digest/counts.js';
-import { readNight } from './digest/reader.js';
 import { lastBeat, type Beat } from './heartbeat.js';
 
 export type Status = {
@@ -15,8 +14,7 @@ export type NightRow = { night: string; counts: NightCounts | null };
 
 function countsFor(runsDir: string, night: string): NightCounts | null {
   try {
-    const n = readNight(runsDir, night);
-    return n ? countNight(n) : null;
+    return countNight(runsDir, night);
   } catch {
     return null;
   }

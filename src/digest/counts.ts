@@ -1,15 +1,24 @@
-import type { Night } from './types.js';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parseLine } from './reader.js';
+import type { RunStatus } from './types.js';
 
-export type NightCounts = { ok: number; retry: number; fail: number };
+export type NightCounts = Record<RunStatus, number>;
 
-// Derived from the per-job rows (the contract keeps no per-status line totals):
-// retry = retry lines (sum of retries); ok / fail = jobs whose latest line ended that way.
-export function countNight(night: Night): NightCounts {
+// Run lines per status for one night (bad lines are left out; the digest counts those).
+// null when there is no file for the night.
+export function countNight(runsDir: string, night: string): NightCounts | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(night)) return null;
+  let text: string;
+  try {
+    text = readFileSync(join(runsDir, `${night}.jsonl`), 'utf8');
+  } catch {
+    return null;
+  }
   const counts: NightCounts = { ok: 0, retry: 0, fail: 0 };
-  for (const r of night.rows) {
-    counts.retry += r.retries;
-    if (r.lastStatus === 'ok') counts.ok += 1;
-    else if (r.lastStatus === 'fail') counts.fail += 1;
+  for (const raw of text.replace(/^﻿/, '').split('\n')) {
+    const run = raw.trim() === '' ? null : parseLine(raw.trim());
+    if (run) counts[run.status]++;
   }
   return counts;
 }

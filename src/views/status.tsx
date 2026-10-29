@@ -10,7 +10,7 @@ export function StatusBoard({ status }: { status: Status }) {
           <tr><th>installed</th><td>{status.installed}</td></tr>
           <tr>
             <th>last beat</th>
-            <td>{status.lastBeat ? `${status.lastBeat.at} Â· pid ${status.lastBeat.pid}` : <span class="warn">none</span>}</td>
+            <td>{status.lastBeat ? `${status.lastBeat.at} Ã‚Â· pid ${status.lastBeat.pid}` : <span class="warn">none</span>}</td>
           </tr>
         </tbody>
       </table>
@@ -23,8 +23,8 @@ export function StatusBoard({ status }: { status: Status }) {
             <li>
               <a href={`/digest/${n.night}`}>{n.night}</a>
               {n.counts
-                ? ` · ok ${n.counts.ok} · retry ${n.counts.retry} · fail ${n.counts.fail}`
-                : ' · ok — · retry — · fail —'}
+                ? ` Â· ok ${n.counts.ok} Â· retry ${n.counts.retry} Â· fail ${n.counts.fail}`
+                : ' Â· ok â€” Â· retry â€” Â· fail â€”'}
             </li>
           ))}
         </ul>
