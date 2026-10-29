@@ -23,7 +23,7 @@ export function createApp(config: RigConfig = loadConfig()) {
   app.get('/digest/:night', (c) => {
     const name = c.req.param('night');
     const night = readNight(config.runsDir, name);
-    const title = `digest · ${name}`;
+    const title = `digest Â· ${name}`;
     if (!night) {
       return c.html(
         <Layout title={title} lane={lane()}>
@@ -37,6 +37,13 @@ export function createApp(config: RigConfig = loadConfig()) {
         <DigestPage night={night} />
       </Layout>,
     );
+  });
+
+  app.get('/api/digest/:night', (c) => {
+    const night = c.req.param('night');
+    const data = readNight(config.runsDir, night);
+    if (!data) return c.json({ error: 'no run log', night }, 404);
+    return c.json(data);
   });
 
   return app;
